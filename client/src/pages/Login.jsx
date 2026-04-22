@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/authSlice";
 import "../styles/Login.css";
 
 function Login() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const { loading, error } = useSelector((state) => state.auth);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -12,7 +16,6 @@ function Login() {
     });
 
     const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -23,34 +26,14 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        setLoading(true);
         setMessage("");
 
-        try {
-            const res = await api.post("/auth/login", formData);
+        const result = await dispatch(loginUser(formData));
 
-            console.log("LOGIN RESPONSE:", res.data);
-
-            const token = res.data?.token;
-
-            // SAFE ROLE EXTRACTION (handles all backend formats)
-            const role =
-                res.data?.user?.role ||
-                res.data?.role ||
-                "user";
-
-            if (!token) {
-                throw new Error("Token not received from backend");
-            }
-
-            // store in localStorage
-            localStorage.setItem("token", token);
-            localStorage.setItem("role", role);
-
+        if (result.meta.requestStatus === "fulfilled") {
+            const role = result.payload.role;
             setMessage("Login successful ✔");
 
-            // redirect based on role
             setTimeout(() => {
                 if (role === "admin") {
                     navigate("/admin");
@@ -59,15 +42,8 @@ function Login() {
                 }
             }, 800);
 
-        } catch (error) {
-            console.log(error);
-            setMessage(
-                error.response?.data?.message ||
-                error.message ||
-                "Login failed"
-            );
-        } finally {
-            setLoading(false);
+        } else {
+            setMessage(result.payload || "Login failed");
         }
     };
 
@@ -105,6 +81,7 @@ function Login() {
                 </form>
 
                 {message && <p className="message">{message}</p>}
+                {error && <p className="message error">{error}</p>}
 
                 <p className="bottom-text">
                     Don't have an account?
