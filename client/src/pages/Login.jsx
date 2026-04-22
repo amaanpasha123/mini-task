@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import "../styles/Login.css";
 
 function Login() {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ function Login() {
     });
 
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -22,12 +24,15 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setLoading(true);
+        setMessage("");
+
         try {
             const res = await api.post("/auth/login", formData);
 
             localStorage.setItem("token", res.data.token);
 
-            setMessage(res.data.message);
+            setMessage("Login successful");
 
             setTimeout(() => {
                 navigate("/dashboard");
@@ -37,56 +42,50 @@ function Login() {
             setMessage(
                 error.response?.data?.message || "Login failed"
             );
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Login</h2>
+        <div className="login-page">
+            <div className="login-card">
+                <h2>Welcome Back</h2>
+                <p className="subtitle">Login to continue</p>
 
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
+                <form onSubmit={handleSubmit} className="login-form">
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <button type="submit">Login</button>
-            </form>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Please wait..." : "Login"}
+                    </button>
+                </form>
 
-            <p>{message}</p>
+                {message && <p className="message">{message}</p>}
 
-            <p>
-                Don't have an account?{" "}
-                <Link to="/register">Register</Link>
-            </p>
+                <p className="bottom-text">
+                    Don't have an account?
+                    <Link to="/register"> Register</Link>
+                </p>
+            </div>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        width: "300px",
-        margin: "60px auto",
-        textAlign: "center"
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px"
-    }
-};
 
 export default Login;
