@@ -1,22 +1,33 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../styles/Navbar.css";
 
 function Navbar() {
     const navigate = useNavigate();
+    const location = useLocation(); // re-reads on every route change
 
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role"); // 👈 IMPORTANT
+    // Read from localStorage on every render (re-triggered by location change)
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    const [role, setRole] = useState(localStorage.getItem("role"));
+
+    // Sync when route changes (covers login / logout navigation)
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+    }, [location]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("role"); // 👈 clear role too
+        localStorage.removeItem("role");
+        setToken(null);
+        setRole(null);
         navigate("/login");
     };
 
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                <h2 className="logo">MiniTask</h2>
+                <h2 className="logo">Mini<span>Task</span></h2>
 
                 <div className="nav-links">
 
@@ -32,7 +43,7 @@ function Navbar() {
                             <Link to="/dashboard">Dashboard</Link>
                             <Link to="/tasks">Tasks</Link>
 
-                            {/* 🔐 ADMIN ONLY LINKS */}
+                            {/* ADMIN ONLY LINKS */}
                             {role === "admin" && (
                                 <>
                                     <Link to="/admin">Admin Panel</Link>
@@ -41,10 +52,7 @@ function Navbar() {
                             )}
 
                             {/* LOGOUT */}
-                            <button
-                                className="logout-btn"
-                                onClick={handleLogout}
-                            >
+                            <button className="logout-btn" onClick={handleLogout}>
                                 Logout
                             </button>
                         </>
