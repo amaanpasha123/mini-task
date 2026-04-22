@@ -30,18 +30,41 @@ function Login() {
         try {
             const res = await api.post("/auth/login", formData);
 
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", res.data.role); // ✅ FIXED
+            console.log("LOGIN RESPONSE:", res.data);
 
-            setMessage("Login successful");
+            const token = res.data?.token;
 
+            // SAFE ROLE EXTRACTION (handles all backend formats)
+            const role =
+                res.data?.user?.role ||
+                res.data?.role ||
+                "user";
+
+            if (!token) {
+                throw new Error("Token not received from backend");
+            }
+
+            // store in localStorage
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
+
+            setMessage("Login successful ✔");
+
+            // redirect based on role
             setTimeout(() => {
-                navigate("/dashboard");
-            }, 1000);
+                if (role === "admin") {
+                    navigate("/admin");
+                } else {
+                    navigate("/dashboard");
+                }
+            }, 800);
 
         } catch (error) {
+            console.log(error);
             setMessage(
-                error.response?.data?.message || "Login failed"
+                error.response?.data?.message ||
+                error.message ||
+                "Login failed"
             );
         } finally {
             setLoading(false);
@@ -51,10 +74,12 @@ function Login() {
     return (
         <div className="login-page">
             <div className="login-card">
+
                 <h2>Welcome Back</h2>
                 <p className="subtitle">Login to continue</p>
 
                 <form onSubmit={handleSubmit} className="login-form">
+
                     <input
                         type="email"
                         name="email"
@@ -76,6 +101,7 @@ function Login() {
                     <button type="submit" disabled={loading}>
                         {loading ? "Please wait..." : "Login"}
                     </button>
+
                 </form>
 
                 {message && <p className="message">{message}</p>}
@@ -84,6 +110,7 @@ function Login() {
                     Don't have an account?
                     <Link to="/register"> Register</Link>
                 </p>
+
             </div>
         </div>
     );
