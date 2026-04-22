@@ -1,14 +1,10 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-redux";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/authSlice";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../services/api";
 import "../styles/Login.css";
 
 function Login() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const { loading, error } = useSelector((state) => state.auth);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -16,34 +12,37 @@ function Login() {
     });
 
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         setMessage("");
 
-        const result = await dispatch(loginUser(formData));
+        try {
+            const res = await api.post("/auth/login", formData);
 
-        if (result.meta.requestStatus === "fulfilled") {
-            const role = result.payload.role;
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("role", res.data.role);
+
             setMessage("Login successful ✔");
 
             setTimeout(() => {
-                if (role === "admin") {
+                if (res.data.role === "admin") {
                     navigate("/admin");
                 } else {
                     navigate("/dashboard");
                 }
             }, 800);
 
-        } else {
-            setMessage(result.payload || "Login failed");
+        } catch (error) {
+            setMessage(error.response?.data?.message || "Login failed");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -62,7 +61,6 @@ function Login() {
                         onChange={handleChange}
                         required
                     />
-
                     <input
                         type="password"
                         name="password"
@@ -71,14 +69,12 @@ function Login() {
                         onChange={handleChange}
                         required
                     />
-
                     <button type="submit" disabled={loading}>
                         {loading ? "Please wait..." : "Login"}
                     </button>
                 </form>
 
                 {message && <p className="message">{message}</p>}
-                {error && <p className="message">{error}</p>}
 
                 <p className="bottom-text">
                     Don't have an account?
