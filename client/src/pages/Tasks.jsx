@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import "../styles/Tasks.css";
 
 function Tasks() {
     const [tasks, setTasks] = useState([]);
@@ -47,11 +48,7 @@ function Tasks() {
                 setMessage("Task added successfully");
             }
 
-            setFormData({
-                title: "",
-                description: ""
-            });
-
+            setFormData({ title: "", description: "" });
             setEditId(null);
             fetchTasks();
 
@@ -74,13 +71,9 @@ function Tasks() {
     // Mark Completed
     const handleComplete = async (id) => {
         try {
-            await api.put(`/tasks/${id}`, {
-                status: "completed"
-            });
-
+            await api.put(`/tasks/${id}`, { status: "completed" });
             setMessage("Task completed");
             fetchTasks();
-
         } catch (error) {
             setMessage("Update failed");
         }
@@ -88,193 +81,81 @@ function Tasks() {
 
     // Edit Task
     const handleEdit = (task) => {
-        setFormData({
-            title: task.title,
-            description: task.description
-        });
-
+        setFormData({ title: task.title, description: task.description });
         setEditId(task._id);
     };
 
     return (
-        <div style={styles.container}>
-            <h1 style={styles.heading}>Task Manager</h1>
+        <div className="tasks-container">
+            <div className="tasks-inner">
+                <h1 className="tasks-heading">Task Manager</h1>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="text"
-                    name="title"
-                    placeholder="Enter task title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="tasks-form">
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Enter task title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                        className="tasks-input"
+                    />
 
-                <input
-                    type="text"
-                    name="description"
-                    placeholder="Enter task description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    style={styles.input}
-                />
+                    <input
+                        type="text"
+                        name="description"
+                        placeholder="Enter task description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="tasks-input"
+                    />
 
-                <button type="submit" style={styles.addBtn}>
-                    {editId ? "Update Task" : "Add Task"}
-                </button>
-            </form>
+                    <button type="submit" className="tasks-add-btn">
+                        {editId ? "Update Task" : "Add Task"}
+                    </button>
+                </form>
 
-            {message && <p style={styles.message}>{message}</p>}
+                {message && <p className="tasks-message">{message}</p>}
 
-            {/* Tasks */}
-            <div style={styles.taskList}>
-                {tasks.length === 0 ? (
-                    <p>No tasks found</p>
-                ) : (
-                    tasks.map((task) => (
-                        <div key={task._id} style={styles.card}>
-                            <div>
-                                <h3 style={styles.title}>{task.title}</h3>
-                                <p>{task.description}</p>
-                                <p>
-                                    Status:{" "}
-                                    <span
-                                        style={{
-                                            color:
-                                                task.status === "completed"
-                                                    ? "green"
-                                                    : "orange",
-                                            fontWeight: "bold"
-                                        }}
-                                    >
-                                        {task.status}
-                                    </span>
-                                </p>
+                {/* Tasks */}
+                <div className="tasks-list">
+                    {tasks.length === 0 ? (
+                        <p className="tasks-empty">No tasks found</p>
+                    ) : (
+                        tasks.map((task) => (
+                            <div key={task._id} className="task-card">
+                                <div>
+                                    <h3 className="task-title">{task.title}</h3>
+                                    <p className="task-desc">{task.description}</p>
+                                    <p className="task-status">
+                                        Status:{" "}
+                                        <span className={`task-status-value ${task.status}`}>
+                                            {task.status}
+                                        </span>
+                                    </p>
+                                </div>
+
+                                <div className="task-btn-group">
+                                    <button className="task-btn edit" onClick={() => handleEdit(task)}>
+                                        Edit
+                                    </button>
+
+                                    <button className="task-btn complete" onClick={() => handleComplete(task._id)}>
+                                        Complete
+                                    </button>
+
+                                    <button className="task-btn delete" onClick={() => handleDelete(task._id)}>
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
-
-                            <div style={styles.btnGroup}>
-                                <button
-                                    style={styles.editBtn}
-                                    onClick={() => handleEdit(task)}
-                                >
-                                    Edit
-                                </button>
-
-                                <button
-                                    style={styles.completeBtn}
-                                    onClick={() => handleComplete(task._id)}
-                                >
-                                    Complete
-                                </button>
-
-                                <button
-                                    style={styles.deleteBtn}
-                                    onClick={() => handleDelete(task._id)}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                )}
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        width: "700px",
-        margin: "40px auto",
-        fontFamily: "Arial"
-    },
-
-    heading: {
-        textAlign: "center",
-        marginBottom: "25px"
-    },
-
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        marginBottom: "20px"
-    },
-
-    input: {
-        padding: "10px",
-        fontSize: "16px",
-        borderRadius: "6px",
-        border: "1px solid #ccc"
-    },
-
-    addBtn: {
-        padding: "12px",
-        background: "#2563eb",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer"
-    },
-
-    message: {
-        textAlign: "center",
-        color: "green",
-        marginBottom: "20px"
-    },
-
-    taskList: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px"
-    },
-
-    card: {
-        border: "1px solid #ddd",
-        padding: "18px",
-        borderRadius: "10px",
-        boxShadow: "0 3px 8px rgba(0,0,0,0.08)"
-    },
-
-    title: {
-        marginBottom: "8px"
-    },
-
-    btnGroup: {
-        display: "flex",
-        gap: "10px",
-        marginTop: "15px",
-        flexWrap: "wrap"
-    },
-
-    editBtn: {
-        padding: "8px 14px",
-        background: "#f59e0b",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer"
-    },
-
-    completeBtn: {
-        padding: "8px 14px",
-        background: "#16a34a",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer"
-    },
-
-    deleteBtn: {
-        padding: "8px 14px",
-        background: "#dc2626",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer"
-    }
-};
 
 export default Tasks;

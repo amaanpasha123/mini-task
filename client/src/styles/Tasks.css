@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #06060e;
+  --surface:  #0f0f1a;
+  --border:   rgba(255,255,255,0.07);
+  --accent:   #6f5fff;
+  --glow:     rgba(111,95,255,0.35);
+  --txt:      #eeeaff;
+  --muted:    #7a75a0;
+  --success:  #22c55e;
+  --warn:     #f59e0b;
+  --danger:   #ff5f9e;
+}
+
+/* ── Page ── */
+.tasks-container {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: 'Manrope', sans-serif;
+  color: var(--txt);
+  overflow: hidden;
+  padding-bottom: 60px;
+}
+
+/* background orbs */
+.tasks-container::before,
+.tasks-container::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.tasks-container::before {
+  width: 460px; height: 460px;
+  background: rgba(111,95,255,0.15);
+  top: -140px; left: -80px;
+}
+.tasks-container::after {
+  width: 300px; height: 300px;
+  background: rgba(255,95,158,0.12);
+  bottom: -60px; right: -60px;
+  animation-delay: -6s;
+}
+
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(20px,14px) scale(1.06); }
+}
+
+/* ── Inner width ── */
+.tasks-inner {
+  position: relative;
+  z-index: 1;
+  width: 700px;
+  max-width: 95%;
+  margin: 0 auto;
+  padding-top: 48px;
+}
+
+/* ── Heading ── */
+.tasks-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-align: center;
+  margin-bottom: 32px;
+  background: linear-gradient(120deg, var(--txt) 30%, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeUp 0.5s ease 0.05s both;
+}
+
+/* ── Form ── */
+.tasks-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.5s ease 0.15s both;
+}
+
+.tasks-input {
+  padding: 13px 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.95rem;
+  background: var(--surface);
+  color: var(--txt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tasks-input::placeholder { color: var(--muted); }
+.tasks-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(111,95,255,0.15);
+}
+
+.tasks-add-btn {
+  padding: 13px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 22px var(--glow);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+.tasks-add-btn:hover {
+  background: #8677ff;
+  box-shadow: 0 0 36px rgba(111,95,255,0.6);
+  transform: translateY(-2px);
+}
+.tasks-add-btn:active { transform: scale(0.97); }
+
+/* ── Message ── */
+.tasks-message {
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--success);
+  margin-bottom: 20px;
+  animation: fadeUp 0.3s ease both;
+}
+
+/* ── Task list ── */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeUp 0.5s ease 0.25s both;
+}
+
+.tasks-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 20px;
+}
+
+/* ── Card ── */
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  transition: border-color 0.25s, transform 0.2s;
+}
+.task-card:hover {
+  border-color: rgba(111,95,255,0.3);
+  transform: translateY(-2px);
+}
+
+.task-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--txt);
+}
+
+.task-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.task-status {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.task-status-value {
+  font-weight: 700;
+}
+.task-status-value.completed { color: var(--success); }
+.task-status-value.pending   { color: var(--warn); }
+
+/* ── Button group ── */
+.task-btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.task-btn {
+  padding: 8px 18px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.18s;
+}
+.task-btn:hover  { opacity: 0.85; transform: translateY(-1px); }
+.task-btn:active { transform: scale(0.96); }
+
+.task-btn.edit     { background: rgba(245,158,11,0.15); color: var(--warn);    border: 1px solid rgba(245,158,11,0.3); }
+.task-btn.complete { background: rgba(34,197,94,0.12);  color: var(--success); border: 1px solid rgba(34,197,94,0.25); }
+.task-btn.delete   { background: rgba(255,95,158,0.1);  color: var(--danger);  border: 1px solid rgba(255,95,158,0.25); }
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .task-btn-group { flex-direction: column; }
+  .task-btn { width: 100%; text-align: center; }
+}
