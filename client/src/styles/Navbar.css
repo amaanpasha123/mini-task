@@ -1,56 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap');
 
 :root {
-  --bg:     #06060e;
-  --surface:#0f0f1a;
-  --border: rgba(255,255,255,0.07);
-  --accent: #6f5fff;
-  --glow:   rgba(111,95,255,0.35);
-  --danger: #ff5f9e;
-  --txt:    #eeeaff;
-  --muted:  #7a75a0;
+  --bg:      #06060e;
+  --surface: rgba(15, 15, 26, 0.85);
+  --border:  rgba(255, 255, 255, 0.07);
+  --accent:  #6f5fff;
+  --glow:    rgba(111, 95, 255, 0.35);
+  --accent2: #ff5f9e;
+  --txt:     #eeeaff;
+  --muted:   #7a75a0;
 }
 
 /* ── Bar ── */
-.navbar {
+nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(6, 6, 14, 0.8);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-}
-
-.navbar-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 32px;
-  height: 60px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 0 40px;
+  height: 60px;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  animation: slideDown 0.4s ease both;
 }
 
-/* ── Logo ── */
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--txt);
-  margin: 0;
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-.logo span { color: var(--accent); }
 
 /* ── Links ── */
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.nav-links a {
+nav a {
   font-family: 'Manrope', sans-serif;
   font-size: 0.88rem;
   font-weight: 500;
@@ -61,42 +46,58 @@
   transition: color 0.18s, background 0.18s;
 }
 
-.nav-links a:hover {
+nav a:hover {
   color: var(--txt);
-  background: rgba(255,255,255,0.05);
-}
-
-/* active link */
-.nav-links a.active {
-  color: var(--accent);
-  background: rgba(111,95,255,0.1);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ── Logout button ── */
-.logout-btn {
+nav button {
   font-family: 'Manrope', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   padding: 7px 18px;
-  background: rgba(255,95,158,0.1);
-  color: var(--danger);
-  border: 1px solid rgba(255,95,158,0.25);
+  margin-left: 6px;
+  background: rgba(255, 95, 158, 0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(255, 95, 158, 0.25);
   border-radius: 10px;
   cursor: pointer;
-  margin-left: 6px;
   transition: background 0.18s, transform 0.18s;
 }
 
-.logout-btn:hover {
-  background: rgba(255,95,158,0.2);
+nav button:hover {
+  background: rgba(255, 95, 158, 0.2);
   transform: translateY(-1px);
 }
 
-.logout-btn:active { transform: scale(0.96); }
+nav button:active {
+  transform: scale(0.96);
+}
+
+/* ── Admin links — subtle gold tint ── */
+nav a[href="/admin"],
+nav a[href="/admin/users"] {
+  color: #f59e0b;
+}
+
+nav a[href="/admin"]:hover,
+nav a[href="/admin/users"]:hover {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+}
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
-  .navbar-container { padding: 0 16px; }
-  .nav-links a { padding: 5px 10px; font-size: 0.82rem; }
-  .logout-btn  { padding: 6px 12px; }
+  nav {
+    padding: 0 16px;
+    gap: 2px;
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  nav a { font-size: 0.82rem; padding: 5px 10px; }
+  nav button { padding: 6px 12px; }
 }
