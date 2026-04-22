@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminUsers from "./pages/AdminUsers";
+import AdminUser from "./pages/AdminUser";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
