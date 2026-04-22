@@ -5,8 +5,12 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute"; // (you should create this)
 
 function App() {
   return (
@@ -14,14 +18,15 @@ function App() {
       <Navbar />
 
       <Routes>
-        {/* Default Route */}
+
+        {/* Default */}
         <Route path="/" element={<Navigate to="/login" />} />
 
-        {/* Public Routes */}
+        {/* PUBLIC */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Protected Routes */}
+        {/* USER PROTECTED ROUTES */}
         <Route
           path="/dashboard"
           element={
@@ -39,6 +44,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* ADMIN ROUTES */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <AdminUsers />
+            </AdminRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );
