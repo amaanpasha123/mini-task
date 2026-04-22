@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import "../styles/Register.css";
 
 function Register() {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ function Register() {
     });
 
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -23,77 +25,75 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setLoading(true);
+        setMessage("");
+
         try {
             const res = await api.post("/auth/register", formData);
 
-            setMessage(res.data.message);
+            setMessage(res.data.message || "Registration successful");
 
             setTimeout(() => {
                 navigate("/login");
-            }, 1500);
+            }, 1200);
 
         } catch (error) {
             setMessage(
                 error.response?.data?.message || "Registration failed"
             );
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Register</h2>
+        <div className="register-page">
+            <div className="register-card">
+                <h2>Create Account</h2>
+                <p className="subtitle">Register to continue</p>
 
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                />
+                <form onSubmit={handleSubmit} className="register-form">
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Enter Full Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <button type="submit">Register</button>
-            </form>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Please wait..." : "Register"}
+                    </button>
+                </form>
 
-            <p>{message}</p>
+                {message && <p className="message">{message}</p>}
 
-            <p>
-                Already have an account? <Link to="/login">Login</Link>
-            </p>
+                <p className="bottom-text">
+                    Already have an account?
+                    <Link to="/login"> Login</Link>
+                </p>
+            </div>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        width: "300px",
-        margin: "60px auto",
-        textAlign: "center"
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px"
-    }
-};
 
 export default Register;
