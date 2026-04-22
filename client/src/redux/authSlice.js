@@ -1,19 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../services/api";
- 
-// ── Thunk ──
+
 export const loginUser = createAsyncThunk(
     "auth/login",
     async (formData, thunkAPI) => {
         try {
             const res = await api.post("/auth/login", formData);
- 
-            // Save to localStorage so Navbar & Dashboard can read it
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("role", res.data.role);
- 
-            return res.data; // { token, role }
- 
+            return res.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data?.message || "Login failed"
@@ -21,8 +16,7 @@ export const loginUser = createAsyncThunk(
         }
     }
 );
- 
-// ── Slice ──
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
@@ -61,6 +55,6 @@ const authSlice = createSlice({
             });
     }
 });
- 
+
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

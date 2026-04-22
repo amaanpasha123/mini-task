@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/authSlice";
 import "../styles/Login.css";
@@ -50,12 +50,10 @@ function Login() {
     return (
         <div className="login-page">
             <div className="login-card">
-
                 <h2>Welcome Back</h2>
                 <p className="subtitle">Login to continue</p>
 
                 <form onSubmit={handleSubmit} className="login-form">
-
                     <input
                         type="email"
                         name="email"
@@ -77,17 +75,15 @@ function Login() {
                     <button type="submit" disabled={loading}>
                         {loading ? "Please wait..." : "Login"}
                     </button>
-
                 </form>
 
                 {message && <p className="message">{message}</p>}
-                {error && <p className="message error">{error}</p>}
+                {error && <p className="message">{error}</p>}
 
                 <p className="bottom-text">
                     Don't have an account?
                     <Link to="/register"> Register</Link>
                 </p>
-
             </div>
         </div>
     );
