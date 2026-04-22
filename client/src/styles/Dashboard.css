@@ -1,19 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@300;400;500;600&display=swap');
 
-/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Tokens ── */
 :root {
   --bg:     #06060e;
   --accent: #6f5fff;
   --glow:   rgba(111, 95, 255, 0.4);
   --accent2:#ff5f9e;
+  --gold:   #f59e0b;
   --txt:    #eeeaff;
   --muted:  #7a75a0;
 }
 
-/* ── Page wrapper (matches your inline styles.container) ── */
 .container {
   position: relative;
   min-height: 100vh;
@@ -29,11 +27,10 @@
   padding: 40px 20px;
 }
 
-/* animated background glow orbs */
 .container::before,
 .container::after {
   content: '';
-  position: absolute;
+  position: fixed;
   border-radius: 50%;
   filter: blur(110px);
   pointer-events: none;
@@ -56,14 +53,13 @@
   to   { transform: translate(24px,16px) scale(1.07); }
 }
 
-/* ── h1 ── */
+/* ── Heading ── */
 .container h1 {
   position: relative;
   font-family: 'Syne', sans-serif;
   font-size: clamp(2rem, 6vw, 3.4rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.1;
   background: linear-gradient(120deg, var(--txt) 30%, var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -71,8 +67,8 @@
   animation: fadeUp 0.5s ease 0.1s both;
 }
 
-/* ── welcome p ── */
-.container > p {
+/* ── Welcome text ── */
+.container > p:first-of-type {
   position: relative;
   margin-top: 12px;
   font-size: 1.05rem;
@@ -81,13 +77,37 @@
   animation: fadeUp 0.5s ease 0.2s both;
 }
 
-/* ── button group (matches your styles.buttonGroup) ── */
+/* ── Role badge ── */
+.role-badge {
+  position: relative;
+  margin-top: 14px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 5px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  animation: fadeUp 0.5s ease 0.25s both;
+}
+
+.role-badge[data-role="admin"] {
+  background: rgba(245,158,11,0.12);
+  color: var(--gold);
+  border: 1px solid rgba(245,158,11,0.3);
+}
+
+.role-badge[data-role="user"] {
+  background: rgba(111,95,255,0.1);
+  color: var(--accent);
+  border: 1px solid rgba(111,95,255,0.25);
+}
+
+/* ── Button group ── */
 .buttonGroup {
   position: relative;
   display: flex;
   justify-content: center;
   gap: 14px;
-  margin-top: 36px;
+  margin-top: 32px;
   flex-wrap: wrap;
   animation: fadeUp 0.5s ease 0.35s both;
 }
@@ -105,7 +125,7 @@
 
 .buttonGroup button:active { transform: scale(0.96) !important; }
 
-/* Manage Tasks — primary */
+/* Manage Tasks — primary purple */
 .buttonGroup button:first-child {
   background: var(--accent);
   color: #fff;
@@ -117,15 +137,26 @@
   transform: translateY(-3px);
 }
 
-/* Logout — danger ghost */
-.buttonGroup button:last-child {
-  background: rgba(255,95,158,0.1);
-  color: var(--accent2);
-  border: 1px solid rgba(255,95,158,0.25);
+/* Admin Panel — gold */
+.admin-btn {
+  background: rgba(245,158,11,0.12) !important;
+  color: var(--gold) !important;
+  border: 1px solid rgba(245,158,11,0.3) !important;
 }
-.buttonGroup button:last-child:hover {
-  background: rgba(255,95,158,0.2);
-  transform: translateY(-3px);
+.admin-btn:hover {
+  background: rgba(245,158,11,0.22) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* Logout — pink ghost */
+.logout-btn-dash {
+  background: rgba(255,95,158,0.1) !important;
+  color: var(--accent2) !important;
+  border: 1px solid rgba(255,95,158,0.25) !important;
+}
+.logout-btn-dash:hover {
+  background: rgba(255,95,158,0.2) !important;
+  transform: translateY(-3px) !important;
 }
 
 @keyframes fadeUp {

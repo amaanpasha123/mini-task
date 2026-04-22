@@ -4,8 +4,11 @@ import "../styles/Dashboard.css";
 function Dashboard() {
     const navigate = useNavigate();
 
+    const role = localStorage.getItem("role");
+
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("role");
         navigate("/login");
     };
 
@@ -14,12 +17,22 @@ function Dashboard() {
             <h1>Dashboard</h1>
             <p>Welcome User 👋</p>
 
+            <p className="role-badge" data-role={role}>
+                {role === "admin" ? "🔐 Admin Account" : "👤 User Account"}
+            </p>
+
             <div className="buttonGroup">
                 <button onClick={() => navigate("/tasks")}>
                     Manage Tasks
                 </button>
 
-                <button onClick={handleLogout}>
+                {role === "admin" && (
+                    <button className="admin-btn" onClick={() => navigate("/admin")}>
+                        Admin Panel
+                    </button>
+                )}
+
+                <button className="logout-btn-dash" onClick={handleLogout}>
                     Logout
                 </button>
             </div>
