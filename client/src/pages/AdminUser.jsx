@@ -8,12 +8,15 @@ function AdminUsers() {
     const fetchUsers = async () => {
         try {
             const res = await api.get("/admin/users");
-            setUsers(res.data);
+
+            console.log(res.data);
+
+            setUsers(res.data || []);
         } catch (err) {
-            console.log(err.response?.data || err.message);
+            console.log(err);
+            setUsers([]);
         }
     };
-
     useEffect(() => {
         fetchUsers();
     }, []);
